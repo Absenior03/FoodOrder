@@ -5,6 +5,7 @@ import { MouseTrackingText } from '../common/MouseTrackingText';
 import { MagneticButton } from '../common/MagneticButton';
 import AuthModal from '../auth/AuthModal';
 import CartToggle from '../cart/CartToggle';
+import { sanitizeProfilePictureUrl } from '../../utils/imageUtils';
 
 const Header: React.FC = () => {
   const { state, logout } = useAuth();
@@ -89,9 +90,13 @@ const Header: React.FC = () => {
                   >
                     {state.user?.profilePicture ? (
                       <img
-                        src={state.user.profilePicture}
+                        src={sanitizeProfilePictureUrl(state.user.profilePicture) || ''}
                         alt={`${state.user.firstName} ${state.user.lastName}`}
                         className="h-8 w-8 rounded-full object-cover border-2 border-blue-500"
+                        onError={(e) => {
+                          console.error('Failed to load profile picture');
+                          e.currentTarget.style.display = 'none';
+                        }}
                       />
                     ) : (
                       <div className="h-8 w-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium border-2 border-blue-500">
@@ -123,7 +128,7 @@ const Header: React.FC = () => {
                         <div className="flex items-center space-x-3">
                           {state.user?.profilePicture ? (
                             <img
-                              src={state.user.profilePicture}
+                              src={sanitizeProfilePictureUrl(state.user.profilePicture) || ''}
                               alt={`${state.user.firstName} ${state.user.lastName}`}
                               className="h-10 w-10 rounded-full object-cover border-2 border-gray-200"
                             />
