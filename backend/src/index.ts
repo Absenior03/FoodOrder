@@ -10,6 +10,7 @@ import {
   rateLimitConfigs 
 } from './middleware';
 import { authRoutes, inventoryRoutes, cartRoutes, orderRoutes } from './routes';
+import { adminRoutes } from './routes/adminRoutes';
 import { initializeWebSocketService } from './services/websocketService';
 
 // Load environment variables
@@ -37,6 +38,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Basic health check route
 app.get('/api/health', (req, res) => {
