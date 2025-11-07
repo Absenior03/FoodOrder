@@ -1,0 +1,26 @@
+# Test files
+src/**/*.test.ts
+src/**/__tests__/
+src/__tests__/
+*.test.ts
+*.spec.ts
+
+# Development files
+.env.example
+nodemon.json
+jest.config.js
+
+# Documentation
+README.md
+*.md
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+
+# Coverage
+coverage/

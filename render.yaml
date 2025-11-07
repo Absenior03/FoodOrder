@@ -1,0 +1,36 @@
+services:
+  # Backend Service
+  - type: web
+    name: food-ordering-backend
+    env: node
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && rm -rf src/__tests__ src/**/*.test.ts && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+        sync: false
+      - key: BCRYPT_SALT_ROUNDS
+        value: 12
+      - key: CORS_ORIGIN
+        value: https://your-frontend-url.vercel.app
+      - key: FRONTEND_URL
+        value: https://your-frontend-url.vercel.app
+      - key: MONGODB_URI
+        fromDatabase:
+          name: food-ordering-db
+          property: connectionString
+
+# Database
+databases:
+  - name: food-ordering-db
+    databaseName: food_ordering
+    user: food_ordering_user
+    plan: free
