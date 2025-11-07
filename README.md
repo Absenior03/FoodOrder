@@ -23,11 +23,22 @@ A full-stack food ordering platform that enables users to browse food items by c
 - **React Hook Form** for form handling
 - **Three.js** for interactive elements
 
+## Hero Section 
 <img width="1470" height="834" alt="Screenshot 2025-11-07 at 22 14 55" src="https://github.com/user-attachments/assets/1d3a1d31-87ac-4ec8-b70f-e61d0b088425" />
+
+## Featured section
 <img width="1470" height="834" alt="Screenshot 2025-11-07 at 08 54 53" src="https://github.com/user-attachments/assets/ce7482d8-6ad3-480b-92c3-2905b2939966" />
+
+## Menu section
 <img width="1470" height="834" alt="Screenshot 2025-11-07 at 13 38 07" src="https://github.com/user-attachments/assets/78e4a39f-cb56-40ad-bb9a-22b235e62886" />
+
+## Cart section
 <img width="1470" height="834" alt="Screenshot 2025-11-07 at 13 39 22" src="https://github.com/user-attachments/assets/890f51b3-1f06-4b81-896f-ac22d4ad0dbe" />
+
+## Order Summary
 <img width="1470" height="834" alt="Screenshot 2025-11-07 at 13 39 56" src="https://github.com/user-attachments/assets/144f7fce-6128-4df3-a447-f32dce37e44a" />
+
+## Order History
 <img width="1470" height="834" alt="Screenshot 2025-11-07 at 13 40 06" src="https://github.com/user-attachments/assets/5c6d833c-b666-4f9a-bc10-10b8c4e0bda4" />
 
 ### Backend
