@@ -16,6 +16,7 @@ import HomePage from './components/pages/HomePage';
 import TestPage from './components/pages/TestPage';
 import CartPage from './components/pages/CartPage';
 import InteractiveInventoryBrowser from './components/inventory/InteractiveInventoryBrowser';
+import ApiDebug from './components/debug/ApiDebug';
 
 
 import './App.css';
@@ -86,6 +87,7 @@ function App() {
                     <Route path="/checkout" element={<CheckoutPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/test" element={<TestPage />} />
+                    <Route path="/api-debug" element={<ApiDebug />} />
                     {/* Redirect any unknown routes to home */}
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>

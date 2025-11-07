@@ -4,6 +4,7 @@ export interface User {
   firstName: string;
   lastName: string;
   phone?: string;
+  profilePicture?: string;
   address?: {
     street: string;
     city: string;
@@ -42,4 +43,5 @@ export interface AuthContextType {
   logout: () => void;
   clearError: () => void;
   checkAuthStatus: () => boolean;
+  updateProfile: (userData: Partial<User>) => Promise<void>;
 }

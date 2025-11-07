@@ -8,6 +8,7 @@ export interface IUser extends Document {
   firstName: string;
   lastName: string;
   phone?: string;
+  profilePicture?: string;
   address?: {
     street: string;
     city: string;
@@ -25,27 +26,27 @@ export interface IUser extends Document {
 const AddressSchema = new Schema({
   street: {
     type: String,
-    required: true,
+    required: false, // Optional to allow partial updates
     trim: true,
     maxlength: 200
   },
   city: {
     type: String,
-    required: true,
+    required: false, // Optional to allow partial updates
     trim: true,
     maxlength: 100
   },
   state: {
     type: String,
-    required: true,
+    required: false, // Optional to allow partial updates
     trim: true,
     maxlength: 50
   },
   zipCode: {
     type: String,
-    required: true,
+    required: false, // Optional to allow partial updates
     trim: true,
-    match: /^\d{5}(-\d{4})?$/ // US ZIP code format
+    match: /^[A-Za-z0-9\s\-]{3,10}$/ // International postal code format (3-10 alphanumeric characters)
   }
 }, { _id: false });
 
@@ -87,6 +88,11 @@ const UserSchema = new Schema<IUser>({
       /^[\+]?[1-9][\d]{0,15}$/,
       'Please provide a valid phone number'
     ]
+  },
+  profilePicture: {
+    type: String,
+    trim: true,
+    maxlength: [5000000, 'Profile picture data is too large (max 5MB)'] // Base64 images can be large (~4MB base64 = ~3MB file)
   },
   address: {
     type: AddressSchema,

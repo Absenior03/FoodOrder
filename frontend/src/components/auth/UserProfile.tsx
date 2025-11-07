@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../context/AuthContext';
 import { User } from '../../types/auth';
@@ -8,9 +8,19 @@ interface UserProfileProps {
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
-  const { state } = useAuth();
+  const { state, updateProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string>(state.user?.profilePicture || '');
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [updateError, setUpdateError] = useState<string | null>(null);
+
+  // Sync profilePicture state with user state
+  useEffect(() => {
+    if (state.user?.profilePicture) {
+      setProfilePicture(state.user.profilePicture);
+    }
+  }, [state.user?.profilePicture]);
 
   const {
     register,
@@ -32,14 +42,53 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
     },
   });
 
+  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Check file size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        setUpdateError('Image size must be less than 2MB');
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        setUpdateError('Please select an image file');
+        return;
+      }
+
+      // Convert to base64
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePicture(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const onSubmit = async (data: Partial<User>) => {
     try {
       setIsSubmitting(true);
-      // TODO: Implement profile update API call
-      console.log('Profile update data:', data);
+      setUpdateError(null);
+      setUpdateSuccess(false);
+
+      // Always include profile picture in update if it exists
+      const updateData = {
+        ...data,
+        profilePicture: profilePicture || undefined,
+      };
+
+      console.log('Updating profile with data:', { ...updateData, profilePicture: updateData.profilePicture ? 'base64 image...' : 'none' });
+      
+      await updateProfile(updateData);
       setIsEditing(false);
-    } catch (error) {
+      setUpdateSuccess(true);
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setUpdateSuccess(false), 3000);
+    } catch (error: any) {
       console.error('Profile update error:', error);
+      setUpdateError(error.message || 'Failed to update profile');
     } finally {
       setIsSubmitting(false);
     }
@@ -80,7 +129,74 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
       </div>
 
       <div className="p-6">
+        {/* Success Message */}
+        {updateSuccess && (
+          <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center">
+            <svg className="h-5 w-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span className="text-green-800">Profile updated successfully!</span>
+          </div>
+        )}
+
+        {/* Error Message */}
+        {updateError && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center">
+            <svg className="h-5 w-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+            <span className="text-red-800">{updateError}</span>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Profile Picture */}
+          <div>
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Profile Picture</h3>
+            <div className="flex items-center space-x-6">
+              <div className="relative">
+                {profilePicture ? (
+                  <img
+                    src={profilePicture}
+                    alt="Profile"
+                    className="h-24 w-24 rounded-full object-cover border-2 border-gray-300"
+                  />
+                ) : (
+                  <div className="h-24 w-24 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-3xl font-bold border-2 border-gray-300">
+                    {state.user?.firstName?.[0]}{state.user?.lastName?.[0]}
+                  </div>
+                )}
+                {isEditing && (
+                  <label
+                    htmlFor="profile-picture"
+                    className="absolute bottom-0 right-0 bg-blue-600 rounded-full p-2 cursor-pointer hover:bg-blue-700 transition-colors"
+                  >
+                    <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <input
+                      id="profile-picture"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleProfilePictureChange}
+                      className="hidden"
+                      disabled={isSubmitting}
+                    />
+                  </label>
+                )}
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">
+                  {isEditing ? 'Click the camera icon to change your profile picture' : 'Your profile picture'}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  JPG, PNG or GIF. Max size 2MB.
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Personal Information */}
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-4">Personal Information</h3>

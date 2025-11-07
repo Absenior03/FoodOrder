@@ -66,12 +66,15 @@ export class AuthController {
         success: true,
         data: {
           user: {
-            id: user._id,
+            id: String(user._id),
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
             phone: user.phone,
-            address: user.address
+            profilePicture: user.profilePicture,
+            address: user.address,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
           },
           tokens: {
             accessToken,
@@ -179,12 +182,15 @@ export class AuthController {
         success: true,
         data: {
           user: {
-            id: user._id,
+            id: String(user._id),
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
             phone: user.phone,
-            address: user.address
+            profilePicture: user.profilePicture,
+            address: user.address,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
           },
           tokens: {
             accessToken,
@@ -266,16 +272,15 @@ export class AuthController {
       res.status(200).json({
         success: true,
         data: {
-          user: {
-            id: user._id,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phone: user.phone,
-            address: user.address,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt
-          }
+          id: String(user._id),
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phone: user.phone,
+          profilePicture: user.profilePicture,
+          address: user.address,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt
         }
       });
     } catch (error) {
@@ -308,12 +313,13 @@ export class AuthController {
         return;
       }
 
-      const { firstName, lastName, phone, address } = req.body;
+      const { firstName, lastName, phone, profilePicture, address } = req.body;
 
       // Update user fields
       if (firstName !== undefined) user.firstName = firstName;
       if (lastName !== undefined) user.lastName = lastName;
       if (phone !== undefined) user.phone = phone;
+      if (profilePicture !== undefined) user.profilePicture = profilePicture;
       if (address !== undefined) user.address = address;
 
       await user.save();
@@ -321,15 +327,15 @@ export class AuthController {
       res.status(200).json({
         success: true,
         data: {
-          user: {
-            id: user._id,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phone: user.phone,
-            address: user.address,
-            updatedAt: user.updatedAt
-          }
+          id: String(user._id),
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phone: user.phone,
+          profilePicture: user.profilePicture,
+          address: user.address,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt
         },
         message: 'Profile updated successfully'
       });

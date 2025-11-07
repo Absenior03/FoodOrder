@@ -87,9 +87,17 @@ const Header: React.FC = () => {
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-md p-2"
                   >
-                    <div className="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                      {getUserInitials()}
-                    </div>
+                    {state.user?.profilePicture ? (
+                      <img
+                        src={state.user.profilePicture}
+                        alt={`${state.user.firstName} ${state.user.lastName}`}
+                        className="h-8 w-8 rounded-full object-cover border-2 border-blue-500"
+                      />
+                    ) : (
+                      <div className="h-8 w-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium border-2 border-blue-500">
+                        {getUserInitials()}
+                      </div>
+                    )}
                     <span className="hidden md:block text-sm font-medium">
                       {state.user?.firstName}
                     </span>
@@ -111,9 +119,28 @@ const Header: React.FC = () => {
                   {/* Dropdown Menu */}
                   {isUserMenuOpen && (
                     <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
-                      <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
-                        <p className="font-medium truncate">{state.user?.firstName} {state.user?.lastName}</p>
-                        <p className="text-gray-500 truncate" title={state.user?.email}>{state.user?.email}</p>
+                      <div className="px-4 py-3 border-b border-gray-100">
+                        <div className="flex items-center space-x-3">
+                          {state.user?.profilePicture ? (
+                            <img
+                              src={state.user.profilePicture}
+                              alt={`${state.user.firstName} ${state.user.lastName}`}
+                              className="h-10 w-10 rounded-full object-cover border-2 border-gray-200"
+                            />
+                          ) : (
+                            <div className="h-10 w-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium border-2 border-gray-200">
+                              {getUserInitials()}
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 truncate">
+                              {state.user?.firstName} {state.user?.lastName}
+                            </p>
+                            <p className="text-xs text-gray-500 truncate" title={state.user?.email}>
+                              {state.user?.email}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                       <Link
                         to="/profile"

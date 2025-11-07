@@ -19,7 +19,8 @@ type AuthAction =
   | { type: 'AUTH_FAILURE'; payload: string }
   | { type: 'AUTH_LOGOUT' }
   | { type: 'CLEAR_ERROR' }
-  | { type: 'SET_LOADING'; payload: boolean };
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'UPDATE_USER'; payload: User };
 
 // Auth reducer
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
@@ -66,6 +67,12 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
       return {
         ...state,
         isLoading: action.payload,
+      };
+    case 'UPDATE_USER':
+      return {
+        ...state,
+        user: action.payload,
+        error: null,
       };
     default:
       return state;
@@ -187,6 +194,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return !!(token && !isTokenExpired(token) && state.isAuthenticated);
   };
 
+  // Update profile function
+  const updateProfile = async (userData: Partial<User>): Promise<void> => {
+    try {
+      const updatedUser = await authService.updateProfile(userData);
+      
+      console.log('Profile updated successfully:', { ...updatedUser, profilePicture: updatedUser.profilePicture ? 'has picture' : 'no picture' });
+      
+      // Update user in storage and state
+      userStorage.set(updatedUser);
+      dispatch({ type: 'UPDATE_USER', payload: updatedUser });
+    } catch (error: any) {
+      const errorMessage = error.message || 'Failed to update profile';
+      console.error('Update profile error:', errorMessage);
+      throw error;
+    }
+  };
+
   const contextValue: AuthContextType = {
     state,
     login,
@@ -194,6 +218,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     clearError,
     checkAuthStatus,
+    updateProfile,
   };
 
   return (
