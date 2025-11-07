@@ -1,0 +1,42 @@
+{
+  "name": "food-ordering-platform",
+  "version": "1.0.0",
+  "description": "A full-stack food ordering platform with React frontend and Node.js backend",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm start",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "build:prod": "NODE_ENV=production npm run build",
+    "start": "npm run start:backend",
+    "start:backend": "cd backend && npm start",
+    "start:prod": "NODE_ENV=production npm run start:backend",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && npm test -- --run",
+    "test:backend": "cd backend && npm test",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:prod:build": "docker-compose -f docker-compose.prod.yml build",
+    "docker:prod:up": "docker-compose -f docker-compose.prod.yml up -d",
+    "docker:prod:down": "docker-compose -f docker-compose.prod.yml down",
+    "docker:prod:logs": "docker-compose -f docker-compose.prod.yml logs -f",
+    "seed:inventory": "cd backend && npm run seed:inventory",
+    "seed:inventory:clear": "cd backend && npm run seed:inventory:clear",
+    "backup:mongodb": "cd scripts && ./backup-mongodb.sh",
+    "deploy:staging": "npm run build:prod && npm run docker:prod:build && npm run docker:prod:up",
+    "deploy:production": "npm run test && npm run build:prod && npm run docker:prod:build",
+    "heroku-postbuild": "npm run install:all && npm run build:prod"
+  },
+  "keywords": ["food", "ordering", "platform", "react", "nodejs", "mongodb"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,57 @@
+name: food-ordering-platform
+services:
+  - name: backend
+    source_dir: backend
+    github:
+      repo: your-username/your-repo-name
+      branch: main
+    run_command: npm start
+    build_command: npm run build
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "8080"
+      - key: JWT_SECRET
+        value: your-jwt-secret
+        type: SECRET
+      - key: BCRYPT_SALT_ROUNDS
+        value: "12"
+      - key: CORS_ORIGIN
+        value: ${frontend.PUBLIC_URL}
+      - key: MONGODB_URI
+        value: ${db.DATABASE_URL}
+    health_check:
+      http_path: /api/health
+    http_port: 8080
+    routes:
+      - path: /api
+
+  - name: frontend
+    source_dir: frontend
+    github:
+      repo: your-username/your-repo-name
+      branch: main
+    build_command: npm run build
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+      - key: REACT_APP_API_URL
+        value: ${backend.PUBLIC_URL}/api
+      - key: REACT_APP_WEBSOCKET_URL
+        value: ${backend.PUBLIC_URL}
+    routes:
+      - path: /
+    static_sites:
+      - name: frontend-static
+        source_dir: build
+
+databases:
+  - name: db
+    engine: MONGODB
+    version: "4.4"
+    size: basic-xs

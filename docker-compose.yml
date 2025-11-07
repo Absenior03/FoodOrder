@@ -1,0 +1,80 @@
+# Development Docker Compose configuration
+version: '3.8'
+
+services:
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+      - REACT_APP_WEBSOCKET_URL=http://localhost:5000
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Backend Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongo:27017/food_ordering_dev
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=development-jwt-secret-key
+      - JWT_EXPIRES_IN=24h
+      - BCRYPT_SALT_ROUNDS=10
+      - CORS_ORIGIN=http://localhost:3000
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      - ./backend/logs:/app/logs
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # MongoDB Service
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=food_ordering_dev
+    volumes:
+      - mongo_data:/data/db
+      - ./scripts/mongo-init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Redis Service
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
+  redis_data:
+
+networks:
+  app-network:
+    driver: bridge
