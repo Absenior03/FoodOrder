@@ -89,7 +89,7 @@ describe('AuthContext', () => {
   });
 
   it('restores authentication state from localStorage on mount', async () => {
-    const mockUser = { _id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' };
+    const mockUser = { id: '1', _id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' };
     const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTl9.Lp-38RKwAk-qoGVOC8_N_8O8ePTRlhBvCg_N_8O8ePQ';
     
     mockLocalStorage.getItem.mockImplementation((key) => {
@@ -109,7 +109,7 @@ describe('AuthContext', () => {
   });
 
   it('clears storage when token is expired on mount', async () => {
-    const mockUser = { _id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' };
+    const mockUser = { id: '1', _id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' };
     const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.invalid';
     
     mockLocalStorage.getItem.mockImplementation((key) => {
@@ -130,12 +130,18 @@ describe('AuthContext', () => {
   });
 
   it('handles successful login', async () => {
-    const mockUser = { _id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' };
+    const mockUser = { id: '1', _id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' };
     const mockToken = 'mock-token';
     
     mockAuthService.login.mockResolvedValue({
       success: true,
-      data: { user: mockUser, token: mockToken },
+      data: { 
+        user: mockUser, 
+        tokens: { 
+          accessToken: mockToken,
+          refreshToken: 'mock-refresh-token'
+        }
+      },
       message: 'Login successful'
     });
     
@@ -180,12 +186,18 @@ describe('AuthContext', () => {
   });
 
   it('handles successful registration', async () => {
-    const mockUser = { _id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' };
+    const mockUser = { id: '1', _id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' };
     const mockToken = 'mock-token';
     
     mockAuthService.register.mockResolvedValue({
       success: true,
-      data: { user: mockUser, token: mockToken },
+      data: { 
+        user: mockUser, 
+        tokens: { 
+          accessToken: mockToken,
+          refreshToken: 'mock-refresh-token'
+        }
+      },
       message: 'Registration successful'
     });
     
@@ -231,12 +243,18 @@ describe('AuthContext', () => {
 
   it('handles logout', async () => {
     // First set up authenticated state
-    const mockUser = { _id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' };
+    const mockUser = { id: '1', _id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' };
     const mockToken = 'mock-token';
     
     mockAuthService.login.mockResolvedValue({
       success: true,
-      data: { user: mockUser, token: mockToken },
+      data: { 
+        user: mockUser, 
+        tokens: { 
+          accessToken: mockToken,
+          refreshToken: 'mock-refresh-token'
+        }
+      },
       message: 'Login successful'
     });
     
@@ -314,12 +332,18 @@ describe('AuthContext', () => {
     });
     
     // Login and check status
-    const mockUser = { _id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' };
+    const mockUser = { id: '1', _id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User' };
     const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTl9.Lp-38RKwAk-qoGVOC8_N_8O8ePTRlhBvCg_N_8O8ePQ';
     
     mockAuthService.login.mockResolvedValue({
       success: true,
-      data: { user: mockUser, token: mockToken },
+      data: { 
+        user: mockUser, 
+        tokens: { 
+          accessToken: mockToken,
+          refreshToken: 'mock-refresh-token'
+        }
+      },
       message: 'Login successful'
     });
     

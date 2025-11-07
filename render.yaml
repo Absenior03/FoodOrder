@@ -5,10 +5,8 @@ services:
     env: node
     region: oregon
     plan: free
-    rootDir: backend
-    buildCommand: npm install && npm run build || echo "Build completed with warnings"
-    startCommand: npm start
-    healthCheckPath: /api/health
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && npm start
     envVars:
       - key: NODE_ENV
         value: production
@@ -22,6 +20,8 @@ services:
       - key: CORS_ORIGIN
         value: https://your-frontend-url.vercel.app
       - key: FRONTEND_URL
+        value: https://your-frontend-url.vercel.app
+      - key: ALLOWED_ORIGINS
         value: https://your-frontend-url.vercel.app
       - key: MONGODB_URI
         fromDatabase:

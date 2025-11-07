@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import ItemCard from '../../inventory/ItemCard';
 import { AuthProvider } from '../../../context/AuthContext';
 import { CartProvider } from '../../../context/CartContext';
-import { FoodItem } from '../../../types/inventory';
+import { FoodItem, FoodCategory } from '../../../types/inventory';
 
 // Mock the cart service
 const mockAddToCart = jest.fn();
@@ -35,7 +35,7 @@ const mockFoodItem: FoodItem = {
   _id: '1',
   name: 'Test Apple',
   description: 'Fresh red apple',
-  category: 'Fruit',
+  category: FoodCategory.FRUIT,
   price: 2.50,
   stock: 10,
   imageUrl: '/test-image.jpg',

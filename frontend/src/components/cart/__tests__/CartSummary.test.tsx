@@ -3,16 +3,16 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import CartSummary from '../CartSummary';
 import { CartItem } from '../../../types/cart';
+import { FoodCategory } from '../../../types/inventory';
 
 // Mock the cart context with test data
 const mockCartItems: CartItem[] = [
   {
-    itemId: '1',
-    item: {
+    itemId: {
       _id: '1',
       name: 'Apple',
       description: 'Fresh red apple',
-      category: 'Fruit',
+      category: FoodCategory.FRUIT,
       price: 2.50,
       stock: 10,
       imageUrl: '/apple.jpg',
@@ -24,12 +24,11 @@ const mockCartItems: CartItem[] = [
     priceAtAdd: 2.50,
   },
   {
-    itemId: '2',
-    item: {
+    itemId: {
       _id: '2',
       name: 'Banana',
       description: 'Yellow banana',
-      category: 'Fruit',
+      category: FoodCategory.FRUIT,
       price: 1.25,
       stock: 15,
       imageUrl: '/banana.jpg',
