@@ -1,6 +1,10 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ],
     "sourceMap": false,
     "declaration": false,
     "declarationMap": false,
